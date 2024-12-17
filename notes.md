@@ -76,6 +76,24 @@ The keywords `break` and `continue` apply to the innermost loops. To label a loo
 * In C and C++, you need to explicitly allocate and free the memory.
 * Rust uses a third approach: a system of ownership with a set of rules that the compiler checks. If the rules are violated, compiling will fail. None of the features will slow down the program while running.
 * Rust is a systems programming language. This means that understanding whether a value is on the stack or the heap and how that affects 
+* Ownership Rules
+    * Each value in Rust has an *owner*.
+    * There can be only one owner at a time.
+    * When the owner goes out of scope, the value will be dropped.
+* Variable Scope follows similar rules to those in other programming languages
+* The String Type
+    * Unlike other data types covered in chapter 3, `String` type most likely consists of unknown size; meaning it will be stored on the heap.
+    * Hard-coded string literals are convenient, but they are immutable and not every string value can be known at time of compile (like user input).
+    * Strings can be created from string literals:  
+`let s = String::from("hello");`
 
+* Memory and Allocation
+    * To support a mutable, growable piece of text:
+    * The memory must be requested from the memory allocator at runtime.  
+  `String::from()`
+    * We need a way of returning the memory to the allocator when we're done with our `String`.
+    * When a variable moves out of scope, Rust automatically calls a special function called `drop`, where the author of `String` can put the code to return the memory.
+* Variables and Data Interacting with Move
+  * Multiple variables can interact with the same data in different ways in Rust.
 
 
