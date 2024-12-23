@@ -189,4 +189,241 @@ fn main() {
 * One problem with Structs (again, similar to Python class objects): calling the normal `println!` on a Struct will cause a compile error. The macro is calling `std::fmt::Display` which is not implemented in Structs.
 * Structs also do not implement the trait `Debug` by default. It can be added to a Struct explicitly by beginning with the line:  
 `#[derive(Debug)]`
-* 
+* More details on the `derive` attribute and others in Appendix C.
+#### 5.3 Method Syntax
+**Defining Methods**
+* Similar to Python, methods behave like functions defined within a struct, enum or a trait object.  
+```{rust}
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+}
+
+fn main() {
+    let rect1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!(
+        "The area of the rectangle is {} square pixels.",
+        rect1.area()
+    );
+}
+```
+* The main reason for using methods instead of functions is for organization. 
+* Another common use of methods is to implement one that shares a name with the Struct's field name and set it to return the field value  -- creating a *getter*.  
+
+**Methods with More Parameters**
+
+### Chapter 6 Enums and Pattern Matching
+
+---
+#### 6.1 Defining an Enum
+Enums give you a way of saying a value is one of a set of possible values. One case where this may be useful is when working with IP addresses. We would need a way to account for v.4 and a v.6 version --but only one or the other at any given time.  
+`enum IpAddrKind {V4, V6,} //again with this extra comma`  
+**Enum Values**  
+* We can create an instance of each like this:  
+`let four = IpAddrKind::V4;`  
+`let six = IpAddrKind::V6;`  
+* So variants of an `enum` are namespaced under its identifier, which is useful because both instances are of the same type: `IpAddrKind`; allowing us to define a function that takes any instance of tha type.  
+`fn route(ip_kind: IpAddrKind) {}`  
+`route(IpAddrKind::V4);`  
+* We can also update our `enum` to store the actual IP address *data*:  
+```{rust}
+enum IpAddrKind {
+  V4(String),
+  V6(String),
+}
+```
+This demonstrates another aspect of the `enum`: the name of each variant that we define also becomes a function that constructs an instance of the enum.  
+* Enums are not limited to defining each variant with the same data type or number of them.
+```{rust}
+    enum IpAddr {
+        V4(u8, u8, u8, u8),
+        V6(String),
+    }
+    let home = IpAddr::V4(127, 0, 0, 1);
+    let loopback = IpAddr::V6(String::from("::1"));
+```
+* The IP address example is common enough that the standard library has it built in. Only, They created a Struct for both versions and then embedded them into an Enum. Any kind of data can be stored in an enum, including other enums.  
+Ex:  
+```{rust}
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+```
+This enum has four variants with different types:
+  * **Quit** has no data associated with it
+  * **Move** has named fields
+  * **Write** includes a String
+  * **ChangeColor** has three i32 values  
+
+Each variant behaves like a Struct, except it would take four different Structs. This method allows us to write a function that takes any of these variants because the variants of the enum are all grouped together as the **Message** type.  
+We can also use `impl` to create methods for an enum.  
+
+**The Option Enum and its Advantages Over Null Values**  
+* `Option` is a special type of enum to handle the case where the value could be something *or* it could be nothing. One common reason to use these is to prevent bugs.  
+* Rust doesn't use *Null*. Compile errors cannot result in Rust due to a Null value being called when a not-Null value is expected. To express the concept of an invalid or absent value, the enum `Option<T>` was created in the standard library.  
+```{rust}
+enum Option<T> {
+  None,
+  Some<T>,
+}
+```
+Chapter 10 will cover generic type parameters like `<T>`. For now, knowing that `T` can hold one piece of any kind of data. In general, in order to use an `Option<T>` value, you want to have code that can handle each variant. Code that will run only if `Some<T>` value exists, and code that will run only if `None` is found. Next, we will look at the `match` expression.
+
+#### 6.2 The match Control Flow Construct
+**Match** compares a value against a series of patterns and then executes code that matches the indicated pattern.  
+Patterns can be made up of literal values, variable names, wildcards, and many other things. Covers will be covered more in Chapter 18.  
+```{rust}
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter,
+}
+fn value_in_cents(coin: Coin) -> u8 {
+    match coin {
+        Coin::Penny => 1,
+        Coin::Nickel => 5,
+        Coin::Dime => 10,
+        Coin::Quarter => 25,
+    }
+}
+```
+Create an instance of **Coin** using the enum, and the function returns a value that matches. It is simple to add more to the process. Adding  
+`Coin::Penny => { println!( "Lucky penny!" ); 1 }`  
+will print the indicated text *and* return the value.  
+**Patterns That Bind Values**  
+```{rust}
+#[derive(Debug)]
+// so we can inspect the state in a minute
+enum UsState {
+    Alabama,
+    Alaska,
+    // --snip--
+}
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter(UsState),
+}
+fn value_in_cents(coin: Coin) -> u8 {
+    match coin {
+        Coin::Penny => 1,
+        Coin::Nickel => 5,
+        Coin::Dime => 10,
+        Coin::Quarter(state) => {
+            println!("State quarter from {state:?}!");
+            25
+        }
+    }
+}
+```
+The pattern of combining a match against an enum, bind a variable to the data inside, and then execute code based on it.  
+**Matches Are Exhaustive**  
+Another aspect of `match`: **all** cases must be covered in order for the code to be valid. Rust takes measures to identify missing cases during compile.  
+**Catch-all Patterns and the _ Placeholder**  
+Using enums, we can take special actions for a few particular values, but for all other values take one default action.  
+```{rust}
+    let dice_roll = 9; // hardcoded instead of random for explanatory reason
+    match dice_roll {
+        3 => add_fancy_hat(), // not 3, pass
+        7 => remove_fancy_hat(), // not 7, pass
+        other => move_player(other), // calls move_player(other)
+    } // 'other' acts as catch-all
+    
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
+    fn move_player(num_spaces: u8) {}
+---
+// another way to do this would be to replace the 'other' arm of match with:
+        _ => reroll()
+        //--snip--and replace move_player with
+     fn reroll() {}
+// the _ placeholder replaces the catch-all other. still meets exhaustiveness requirement.
+// explicitly ignoring any value that reaches the last _ arm
+---
+// if you want nothing to happen --no move_player, no reroll-- we can use
+        //--snip--
+        _ => ()
+// match understands that we don't want to use any value except the two explicit values
+// in this implementation, match is told to run no further code.
+```
+#### 6.3 Concise Control Flow with `if let`
+This syntax is a less verbose way to handle values that match one pattern while ignoring the rest. A comparison of `match` and `if let` to handle the same pattern.  
+```{rust}
+    let config_max = Some(3u8);
+    match config_max {
+        Some(max) => println!("The maximum is configured to be {max}"),
+        _ => (),
+    }
+    let config_max = Some(3u8);
+    if let Some(max) = config_max { // note the single '='
+        println!("The maximum is configured to be {max}");
+    }
+```
+**Match** enforces exhaustive checking, **if let** trades that for less code, less indentation, and less boilerplate code. Use cautiously. `if let` allows for the use of `else`, but this seems to lose any advantage of this method.  
+
+---
+### Chapter 7: Managing Growing Projects with Packages, Crates, and Modules
+As a project grows, code should be organized by splitting into multiple modules and then multiple files. A package can contain multiple binary crates and optionally one library crate. As a package grows, you can extract parts into separate crates that become external dependencies. On a larger scale, Rust provides Workspaces (covered in chapter 14).  
+* **Packages**: Cargo feature to build, test, and share crates
+* **Crates**: a tree of modules that produces a library or executable
+* **Modules** and **use**: control the organization, scope and privacy of paths
+* **Paths**: a way of naming an item, such as struct, function, or module  
+
+#### 7.1 Packages and Crates
+
+#### 7.2 Defining Modules to Control Scope and Privacy
+
+#### 7.3 Paths for Referring to an Item in the Module Tree
+
+#### 7.4 Bringing Paths Into Scope with the use Keyword
+
+
+#### 7.5 Separating Modules into Different Files
+
+### Chapter 8: Common Collections
+
+#### 8.1 Storing Lists of Values with Vectors
+
+#### 8.2 Storing UTF-8 Encoded Text with Strings
+
+#### 8.3 Storing Keys with Associated Values in Hash Maps
+
+### Chapter 9: Error Handling
+
+#### 9.1 Unrecoverable Errors with panic!
+
+#### 9.2 Recoverable Errors with Result
+
+#### 9.3 To panic! or Not to panic!
+
+### Chapter 10: Generic Types, Traits, and Lifetimes
+
+#### 10.1 Generic Data Types
+
+#### 10.2 Traits: Defining Shared Behaviors
+
+#### 10.3 Validating References with Lifetimes
+
+### Chapter 11: Writing Automated Tests
+
+#### 11.1 How to Write Tests
+
+#### 11.2 Controlling How Tests Are Run
+
+#### 11.3 Test Organization
