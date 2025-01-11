@@ -1,13 +1,13 @@
-### Chapter 3
+## Chapter 3
 
-#### 3.1 Variables and mutability
+### 3.1 Variables and mutability
 
 * Variables are by default immutable
     * `let x: 1`, `let mut x: 2`
 * `const` are always immutable. Type must be annotated
   * naming convention: all uppercase with underscore
 
-#### 3.2 Data types
+### 3.2 Data types
 Rust is a statically typed language. It must know the types of all variables at compile time.
 * Scalar types
   1. integers: signed or unsigned (i or u), 
@@ -24,7 +24,7 @@ Rust is a statically typed language. It must know the types of all variables at 
         * use when you know the number of elements will not need to change
         * access elements using `array[index]`
 
-#### 3.3 Functions
+### 3.3 Functions
 Rust code uses *snake case* convention for naming function and variable names.
 * Parameters
   1. When a function has parameters, you can provide it with concrete values (arguments).
@@ -46,9 +46,9 @@ Rust is an expression-based language. Function bodies are made up of a series of
 * Functions with Return Values  
 Return values do not have names, but the type must be declared.  
 `fn five() -> i32 { 5 }`
-#### 3.4 Comments
+### 3.4 Comments
 Anything on a line after `//` is commented out. Chapter 14 discusses documentation comments
-#### 3.5 Control Flow
+### 3.5 Control Flow
 This is the typical conditional decision-tree programming.  
 1. If Expressions
    * Rust uses `if`, `else if`, `else`, `while`, `for`
@@ -70,8 +70,8 @@ fn main() {
 * Loop Labels: When you have nested loops these come in handy.  
 The keywords `break` and `continue` apply to the innermost loops. To label a loop, use a single quote before the label name followed by a colon. (`'counting_up: loop { expression }`)
 
-### Chapter 4 Ownership
-#### 4.1 What is it?
+## Chapter 4 Ownership
+### 4.1 What is it?
 * Most modern, high-level languages use garbage collection. (Python, Java, C#, Ruby, JavaScript, etc.)
 * In C and C++, you need to explicitly allocate and free the memory.
 * Rust uses a third approach: a system of ownership with a set of rules that the compiler checks. If the rules are violated, compiling will fail. None of the features will slow down the program while running.
@@ -133,7 +133,7 @@ println!("s1 = {s1}, s2 = {s2}");
     * There's no mechanism being used to synchronize access to the data
 * Dangling References
   * A *dangling pointer* refers to a pointer that references a location in memory that may have been given to someone else. Rust prevents this.
-#### 4.3 The Slice Type
+### 4.3 The Slice Type
   * *Slices* let you reference a contiguous sequence of elements in a collection (chapter 8) rather than the whole collection. A Slice is another type of reference. It does not have ownership.
 ```{rust}
 let s = String::from("hello world");
@@ -141,8 +141,8 @@ let hello = &s[0..5];
 let world = &s[6..11];
 ```
   * Slicing applies similarly to non-String types
-### Chapter 5 Using Structs to Structure Related Data
-#### 5.1 Defining and Instantiating Structs
+## Chapter 5 Using Structs to Structure Related Data
+### 5.1 Defining and Instantiating Structs
 * The *Struct* data type behaves like an OOP class object
 Example of a structure:  
 ```{rust}
@@ -183,14 +183,13 @@ fn main() {
 * Unit-Like Structs Without Any Fields
   * This section describes a struct object with no fields and no data type defined. A further explanation is to be explained in Chapter 10; it appears to be useful in validating references and possibly for testing.
   * The ability to store references in Structs requires the use of *lifetimes* (Chapter 10)
-#### 5.2 An Example Program Using Structs
-[Hover for code path](C:\Users\johnf\Rust\Rust\structs\src\main.rs)
+### 5.2 An Example Program Using Structs
 * Using Structs as parameters in functions adds context and improves readability of the code. 
 * One problem with Structs (again, similar to Python class objects): calling the normal `println!` on a Struct will cause a compile error. The macro is calling `std::fmt::Display` which is not implemented in Structs.
 * Structs also do not implement the trait `Debug` by default. It can be added to a Struct explicitly by beginning with the line:  
 `#[derive(Debug)]`
 * More details on the `derive` attribute and others in Appendix C.
-#### 5.3 Method Syntax
+### 5.3 Method Syntax
 **Defining Methods**
 * Similar to Python, methods behave like functions defined within a struct, enum or a trait object.  
 ```{rust}
@@ -223,10 +222,11 @@ fn main() {
 
 **Methods with More Parameters**
 
-### Chapter 6 Enums and Pattern Matching
+---
+## Chapter 6 Enums and Pattern Matching
 
 ---
-#### 6.1 Defining an Enum
+### 6.1 Defining an Enum
 Enums give you a way of saying a value is one of a set of possible values. One case where this may be useful is when working with IP addresses. We would need a way to account for v.4 and a v.6 version --but only one or the other at any given time.  
 `enum IpAddrKind {V4, V6,} //again with this extra comma`  
 **Enum Values**  
@@ -283,7 +283,7 @@ enum Option<T> {
 ```
 Chapter 10 will cover generic type parameters like `<T>`. For now, knowing that `T` can hold one piece of any kind of data. In general, in order to use an `Option<T>` value, you want to have code that can handle each variant. Code that will run only if `Some<T>` value exists, and code that will run only if `None` is found. Next, we will look at the `match` expression.
 
-#### 6.2 The match Control Flow Construct
+### 6.2 The match Control Flow Construct
 **Match** compares a value against a series of patterns and then executes code that matches the indicated pattern.  
 Patterns can be made up of literal values, variable names, wildcards, and many other things. Covers will be covered more in Chapter 18.  
 ```{rust}
@@ -362,7 +362,7 @@ Using enums, we can take special actions for a few particular values, but for al
 // match understands that we don't want to use any value except the two explicit values
 // in this implementation, match is told to run no further code.
 ```
-#### 6.3 Concise Control Flow with `if let`
+### 6.3 Concise Control Flow with `if let`
 This syntax is a less verbose way to handle values that match one pattern while ignoring the rest. A comparison of `match` and `if let` to handle the same pattern.  
 ```{rust}
     let config_max = Some(3u8);
@@ -378,52 +378,571 @@ This syntax is a less verbose way to handle values that match one pattern while 
 **Match** enforces exhaustive checking, **if let** trades that for less code, less indentation, and less boilerplate code. Use cautiously. `if let` allows for the use of `else`, but this seems to lose any advantage of this method.  
 
 ---
-### Chapter 7: Managing Growing Projects with Packages, Crates, and Modules
+## Chapter 7: Managing Growing Projects with Packages, Crates, and Modules
 As a project grows, code should be organized by splitting into multiple modules and then multiple files. A package can contain multiple binary crates and optionally one library crate. As a package grows, you can extract parts into separate crates that become external dependencies. On a larger scale, Rust provides Workspaces (covered in chapter 14).  
 * **Packages**: Cargo feature to build, test, and share crates
 * **Crates**: a tree of modules that produces a library or executable
 * **Modules** and **use**: control the organization, scope and privacy of paths
 * **Paths**: a way of naming an item, such as struct, function, or module  
 
-#### 7.1 Packages and Crates
+### 7.1 Packages and Crates
+A **crate** is the smallest amount of code that the compiler considers at a time. 
+* even a single `main.rs` file with a single function is considered a crate by the compiler
+* can contain modules, and the modules may be defined in other files that get compiled with the crate
 
-#### 7.2 Defining Modules to Control Scope and Privacy
-
-#### 7.3 Paths for Referring to an Item in the Module Tree
-
-#### 7.4 Bringing Paths Into Scope with the use Keyword
+#### A crate can come in one of two forms:
+**binary crates:** programs you can compile to an executable that can be run like a command line or a server
+  * must have a function called `main` that defines what happens when the executable runs
 
 
-#### 7.5 Separating Modules into Different Files
+**library crates:** *don't* have a `main` function and *don't* compile to an executable
+  * define functionality intended to be shared with multiple projects
 
-### Chapter 8: Common Collections
+The **crate root** is a source file that the Rust compiler starts from and make up the root module of the crate.  
 
-#### 8.1 Storing Lists of Values with Vectors
+A **package** is a bundle of one or more crates that provide a set of functionality. They contain a *Cargo.toml* file that describes how to build those crates.  
 
-#### 8.2 Storing UTF-8 Encoded Text with Strings
+**Cargo** is actually a package that contains the binary crate for the CLI tool used to build your code. The Cargo package also contain a library crate that the binary crate depends on. Other projects can depend on Cargo library crate to use the same logic the Cargo CLI tool uses. 
 
-#### 8.3 Storing Keys with Associated Values in Hash Maps
+A package can contain as many binary crates as it wants, but at most only one library crate. It must contain at least one crate --of either type.
+### 7.2 Defining Modules to Control Scope and Privacy
+#### Modules Cheat Sheet
+This is a quick reference on how modules, paths, the `use` keyword and the `pub` keyword work in the compiler.
+* **Start form the crate root:** the compiler looks in the crate root file for code to compile
+* **Declaring modules:** the compiler checks the crate root for new declared modules. Ex: `mod garden`
+  * inline, within `{ }` that replace the semicolon following `mod garden`
+  * in the file *src/garden.rs*
+  * in the file *src/garden/mod.rs*
+* **Declaring submodules:** in any file other than crate root, you can declare submodules. Ex: declaring `mod vegetables` in *src/garden.rs*
+  * inline, directly following `mod vegetables` within curly brackets instead of the semicolon
+  * in the file *src/garden/vegetables.rs*
+  * in the file *src/garden/vegetables/mod.rs*
+* **Paths to code in modules:** once a module is part of the crate, you can refer to code in the module from anywhere else in the crate. Ex: an `Asparagus` type in the garden vegetables module would be found at `crate::garden::vegetables::Asparagus`
+* **Private vs. Public:** code within a module is private from its parent modules by *default*. to declare it public, uae `pub mod` instead of `mod`. to make items within a public module publis as well, use `pub` before them as well
+* **The `use` keyword:** within a scope, the `use` keyword creates shortcuts to items to reduce repetition of long paths. 
+  * each instance of `crate::garden::vegetables::Asparagus` can be replaced with
+  * one `use crate::garden::vegetables::Asparagus`
+  * any other uses only require `Asparagus` to make use of that type
 
-### Chapter 9: Error Handling
+Ex: we create a binary crate named `backyard`. the crate's directory, also named `backyard`, contains these files and directories:  
+```angular2html
+backyard
+├── Cargo.lock
+├── Cargo.toml
+└── src
+    ├── garden
+    │     └── vegetables.rs
+    ├── garden.rs
+    └── main.rs     # the crate root file
+```
+Filename: src/main.rs
+```rust
+use crate::garden::vegetables::Asparagus;
 
-#### 9.1 Unrecoverable Errors with panic!
+pub mod garden; //tells the compiler to include code it finds in src/garden.rs
 
-#### 9.2 Recoverable Errors with Result
+fn main() {
+  let plant = Asparagus {};
+  println!("I'm growing {plant:?}!");
+}
+```
+Filename: src/main.rs contains `pub mod vegetables;`, meaning the code in *src/garden/vegetables.rs* too: 
+```rust
+#[derive(Debug)]
+pub struct Asparagus {}
+```
+#### Grouping Related Code in Modules
+**Modules:**
+* organize code within a crate for readability and easy reuse. 
+* control the *privacy* of items
+* are private by default
 
-#### 9.3 To panic! or Not to panic!
+As an example, in path "../Rust/code_samples", terminal command `cargo new restaurant --lib` defines a new library module for organization of a restaurant's "front of house" operations. In this library crate, the module `front_of_house` contains two more modules: `hosting` and `serving`.  
 
-### Chapter 10: Generic Types, Traits, and Lifetimes
+Modules can also hold definitions for other items, such as structs, enums, constants, traits, and functions. Modules allow us to group related definitions together and name why they're related. Programmers using the code can the navigate the code based on the groups rather than having to read through all the definitions. This makes it easier to recognize relevant functions *and* know where to add new functionality to the code and keep the program organized.  
+#### The current crate tree module:
+```angular2html
+crate
+ └── front_of_house
+     ├── hosting
+     │   ├── add_to_waitlist
+     │   └── seat_at_table
+     └── serving
+         ├── take_order
+         ├── serve_order
+         └── take_payment
+```
+This tree has two *child* modules nested within the `front_of_house` module: *siblings* `hosting` and `serving`. The entire tree is rooted under the implicit module named `crate`.  
+All of this organization looks very similar to file directories. Next, we look at how to find our modules.
+### 7.3 Paths for Referring to an Item in the Module Tree
+A path can take two forms:
+  * An *absolute path* is the full path starting from a crate root; for code from an external crate, the absolute path begins with the crate name and for code from the current crate, it starts with the literal `crate`.
+  * A *relative path* starts from the current module and uses `self`, `super`, or an identifier in the current module.
+  * both are followed by one or more identifiers separated by (`::`)
 
-#### 10.1 Generic Data Types
+Calling the `add_to_waitlist` function is done by using its path. Next, we will define a new function in the crate root to do this.  
+```rust
+pub fn eat_at_restaurant() {
+  //Absolute path
+  crate::front_of_house::hosting::add_to_waitlist();
+  //Relative path
+  front_of_house::hosting::add_to_waitlist();
+}
+```
+It's important to remember to update any *relative* path usage during re-organization.  
+#### Current Compile Error:
+The `hosting` module is private. The function `add_to_waitlist()` is not publicly re-exported.  
 
-#### 10.2 Traits: Defining Shared Behaviors
+In Rust, all items are by private to parent modules by default:
+* a parent module can't use the private items inside child modules
+* child models **can** use the items in their ancestor modules
+* this behavior acts similarly to Python class inheritance rules while adding Java private method style implementation
+* Rust always provides the `pub` keyword for any items we want to make public
+#### Exposing Paths with the `pub` Keyword
+This compiling error is not solved by simply making `pub mod hosting`. This only lets the *module* itself be referred to by code in the ancestor module(s), not its contents. In other words, the module is a container. We make it public, *and* we also make public any items within it if we want them accessible publicly. To compile without error:
+```rust
+mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
 
-#### 10.3 Validating References with Lifetimes
+pub fn eat_at_restaurant() {
+    // Absolute path
+    crate::front_of_house::hosting::add_to_waitlist();
 
-### Chapter 11: Writing Automated Tests
+    // Relative path
+    front_of_house::hosting::add_to_waitlist();
+}
+```
+To share library crates so other projects can use their code, your Public API is your contract with users of the crate that determines how it can be interacted with.  
+More information on [Rust API Guidelines can be found here](https://rust-lang.github.io/api-guidelines/).
 
-#### 11.1 How to Write Tests
+#### Best Practices for Packages with a Binary and a Library
+In packages with both a *src/main.rs* binary crate root and a *src/lib.rs library crate root, both crates will have the package name by default.
+* Typically, packages that fit this pattern will have just enough code in the binary crate to start an executable that calls code within the library crate.  
+* This lets other projects benefit from most of the functionality that the package provides because the library crate's code can be shared.  
 
-#### 11.2 Controlling How Tests Are Run
+* The module tree should be defined in *src/main.rs*. Then, any public items can be used in the binary crate by starting paths with the name of the package.  
+* The binary crate becomes a user of the library crate just like a completely external crate would use the library crate: **it can only use the public API**, making you author and client of the API.
+#### Starting Relative Paths with `super`
+To start a relative path in the parent module instead of the current one, use `super`. It's the equivalent of `..` in filesystem path syntax.
+#### Making Structs and Enums Public
+Rust allows you to make a struct public while maintaining default privacy of its fields. This gives us complete control. It also makes it important to carefully consider all public and private function associations.  
 
-#### 11.3 Test Organization
+In contrast, `pub enum Language {Rust, Python}` is all it takes to make an enum and all of its variants public. Enums aren't very useful if variants are private, so variants are public by default.
+### 7.4 Bringing Paths Into Scope with the use Keyword
+There is a way to simplify the process of calling functions, Rust provides the `use` keyword as a shortcut. Adding `use` and a path in a scope is similar to creating a symbolic link in the filesystem. 
+* paths brought into scope with `use` also check privacy like any other paths
+* `use` only creates the shortcut for the particular scope in which the `use` occurs
+#### Creating Idiomatic use Paths (functions)
+```rust
+//Idiomatic use path
+mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+// bring the functions parent module into scope with use
+use crate::front_of_house::hosting;
+
+pub fn eat_at_restaurant() {
+  //specify the parent module when calling the function
+    hosting::add_to_waitlist(); 
+}
+
+//Unidiomatic, does not make it clear where add_to_waitlist is defined
+mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+use crate::front_of_house::hosting::add_to_waitlist;
+
+pub fn eat_at_restaurant() {
+    add_to_waitlist();
+}
+```
+#### Creating Idiomatic use Paths (structs, enums, and other items)
+It's idiomatic to specify the full path. To bring the standard library's `HashMap` struct into the scope of a binary crate:  
+`use std::collections::HashMap;`  
+
+There is no strong reason behind this idiom; only the convention that has emerged. The exception to this idiom occurs if we bring in two items with the same name into scope with `use` statements, because Rust doesn't allow that. To bring two `Result` types into scope that have the same name but different parent modules:
+```rust
+use std::fmt;
+use std::io;
+
+fn function1() -> fmt::Result {
+    // --snip--
+}
+
+fn function2() -> io::Result<()> {
+    // --snip--
+}
+```
+#### Providing New Names with the `as` Keyword
+Providing a new local alias is an alternative way to bring two `Result` types with same name into scope.
+```rust
+use std::fmt::Result;
+use std::io::Result as IoResult;
+
+fn function1() -> Result {
+    // --snip--
+}
+
+fn function2() -> IoResult<()> {
+    // --snip--
+}
+```
+#### Re-exporting Names with `pub use`
+When we bring a name into scope with the `use` keyword, the name available in the new scope is private. To enable the code that calls our code to refer to that name as if it had been defined in that code’s scope, we can combine `pub` and `use`. This technique is called re-exporting.  
+
+**Re-exporting:** bringing an item into scope while also making that item available for others to bring into their scope.
+```rust
+mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+    }
+}
+
+pub use crate::front_of_house::hosting;
+
+pub fn eat_at_restaurant() {
+    hosting::add_to_waitlist();
+}
+```
+Before making this change, external code would have to call the `add_to_waitlist()` function by using the path  
+`restaurant::front_of_house::hosting::add_to_waitlist()`  
+which also would have required front_of_house to marked public. By re-exporting, external code can use the path  
+`restaurant::hosting::add_to_waitlist()`  
+
+This is useful when the internal structure of your code is different from another programmers expectations of your domain. We can write our code with one structure but expose a different structure, making the library well organized for programmers working on the library and programmers calling the library.
+#### Using External Packages
+**Recall:** in chapter 2 with the guessing game project, we added a dependency to access the `rand` package
+```
+Filname: Cargo.toml
+[package]
+name = "guessing_game"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rand = "0.8.5"
+```
+Adding the dependency tells Cargo to download the `rand` package and make it available to our project. Then, to bring `rand` definitions (in this case, the `Rng` trait) into the scope of the package,  
+`use rand::Rng;` gives access to the functions within the trait until `Rng` goes out of scope.  
+
+This is the procedure for pulling any of the many packages made available by the Rust community at [crates.io](https://crates.io/).  
+The [standard `std` library](https://doc.rust-lang.org/std/) is also a crate external to our package. However, because it is shipped with the Rust language, we don't need to take the first step of adding it to the Cargo.toml dependencies. The `use` keyword with the absolute path is all that is required to bring any items from the standard library into scope as previously demonstrated with `use std::collections::HashMap;`.  
+#### Using Nested Paths to Clean Up Large `use` Lists
+Using multiple items defined within the same crate or module individually has the potential for wasting vertical space in our code, as well as creating unnecessary, repetitive code. Rust allows for nested paths to attempt to adhere to DRY best practices.
+```
+Filename: src/main.rs
+// --snip--
+use std::cmp::Ordering;
+use std::io;
+// --snip--
+
+// --snip--
+use std::{cmp::Ordering, io};
+// --snip--
+
+Filename: src/lib.rs
+use std::io;
+use std::io::Write;
+
+use std::io::{self, Write};
+```
+Both methods achieve the same end, one decreases repeating ourselves needlessly.
+#### The Glob Operator
+To bring *all* public items defined in a path into scope, use the `*` glob operator:  
+`use std::collections::*;`  
+This should be used carefully, as it may make things less precise and harder to recognize what and where names are defined / in scope. The most likely case of applying the glob operator is during testing (covered in chapter 11) and sometimes as part of the [prelude pattern](https://doc.rust-lang.org/std/prelude/index.html#other-preludes).
+### 7.5 Separating Modules into Different Files
+To optimize organization, it may become necessary to separate large modules into their own files. For example, let's move the front of house module to its own file named *src/front_of_house.rs*
+```rust
+//Filename: src/lib.rs
+mod front_of_house;
+
+pub use crate::front_of_house::hosting;
+
+pub fn eat_at_restaurant() {
+    hosting::add_to_waitlist();
+}
+//Filename: src/front_of_house.rs
+pub mod hosting {
+    pub fn add_to_waitlist() {}
+}
+```
+The compiler knows to look for the second file because of the module declaration in the crate root.
+
+Rust requires only *one* `mod` declaration in the module tree. Now to look at what happens if we decide to extract the hosting module to its own file. The process is different; hosting is a child of front of house, not of the root module.
+```rust
+//Filename: src/front_of_house.rs
+pub mod hosting;
+
+//new file. name: src/front_of_house/hosting.rs
+pub fn add_to_waitlist() {}
+```
+Cargo looks at the `mod` declarations and tells the compiler to use naming conventions and the module tree structure to find the relevant module.  
+#### Alternate File Paths
+Besides the idiomatic file paths that the Rust compiler uses, Rust also supports an older style of file path.  
+
+For front of house declared in the crate root:
+* src/front_of_house.rs
+* src/front_of_house/mod.rs  
+
+For hosting as part of front of house
+* src/front_of_house/hosting.rs
+* src/front_of_house/hosting/mod.rs
+
+Both styles are supported. Compile errors will occur if both styles are used for the same module and using this older style may result with many files named *mod.rs*, causing confusion. There appears to be no advantage to the older style.  
+### Summary
+* Packages can be split into multiple crates
+* Crates can be split into modules
+* Items defined in one module can be referred to in other modules
+* Use absolute or relative paths to refer to modules
+* Bring paths into scope with `use` to create shortcuts
+* Module code is private by default
+
+---
+## Chapter 8: Common Collections
+Rust's `std` library includes **collections**, a very useful, unique data structure type. Most data types represent one specific value, but collections can contain multiple values.  
+
+Unlike built-in tuples and arrays, the data that the collections point to are stored on the heap. Data stored on the heap follows its own rules. 
+#### Recall:
+The amount of data does not need to be known at compile time and can grow or shrink as the program runs.
+
+Each kind of collection has different capabilities and costs; choosing an appropriate on for a given situation is an acquired skill. This chapter discusses the three most commonly used:
+* **vector:** store a variable number of values next to each other in memory
+* **string:** a collection of characters
+* **hash map:** associate a value with a specific key; a particular implementation of the more general data structure **map**
+### 8.1 Storing Lists of Values with Vectors
+Vectors, or `Vec<T>`, can only store values of the same type, but they are useful when you have a list of items. 
+#### Creating a New Vector
+`let v: Vec<i32> = Vec::new();`  
+In this example, we added the type annotation. Because we aren't inserting any values into this vector, Rust doesn't know what kind of elements we intend to store. This is an important point. Vectors are implemented using generics which are covered in chapter 10.  
+The `Vec<T>` type provided by the `std` library can hold any type; the type can be specified as shown.  
+
+In most cases, the vector will be created with initial values and Rust will infer the type of value to store. Rust provides the `vec!` macro, which will create a new vector that holds the values given to it.  
+`let v = vec![1, 2, 3];`
+#### Updating a Vector
+As with any variable, Rust requires that mutability must be defined explicitly. To create a new vector and then add elements to it, use `push`:
+```
+let mut v = Vec::new();
+
+v.push(5);
+v.push(6);
+v.push(7);
+v.push(8);
+```
+#### Reading Elements of Vectors
+There are two ways to reference a value stored in a vector: indexing and the `get` method. The following example shows both methods with types of returned values annotated for extra clarity.
+```
+let v = vec![1, 2, 3, 4, 5];
+
+let third: &i32 = &v[2];
+println!("The third element is {third}");
+
+let third: Option<&i32> = v.get(2);
+match third {
+    Some(third) => println!("The third element is {third}"),
+    None => println!("There is no third element."),
+}
+```
+Rust provides these two ways to reference an element to let you choose how the programs behaves when you try to use an index outside the existing element range. What happens in each case?
+* index
+  * causes the program to *panic*
+  * use this method when you want the program to crash during an attempt to access an element past the end of the vector
+* `get`
+  * returns `None` without panicking
+  * use if accessing an element beyond the range of the vector may happen occasionally under normal circumstances
+  * the code should also provide some logic to handle having either `Some(&element)` or `None`
+  * these circumstances may be presented when handling user inputs
+
+When the program has a valid reference, the borrow checker enforces the ownership and borrowing rules to ensure this reference and any other references to the contents of the vector remain valid.
+#### Recall:
+The rule states you can't have mutable and immutable references in the same scope. 
+```
+$ cargo run
+   Compiling collections v0.1.0 (file:///projects/collections)
+error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable
+ --> src/main.rs:6:5
+  |
+4 |     let first = &v[0];
+  |                  - immutable borrow occurs here
+5 |
+6 |     v.push(6);
+  |     ^^^^^^^^^ mutable borrow occurs here
+7 |
+8 |     println!("The first element is: {first}");
+  |                                     ------- immutable borrow later used here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `collections` (bin "collections") due to 1 previous error
+```
+Why should a reference to the first element care about the changes at the end of the vector?  
+The error is due to the way that vectors work:
+* values are stored next to each other in memory
+* adding a new element onto the end of the vector might require allocating new memory
+* if there isn't enough room, the vector is copied and stored into a new space
+* the reference to the first element would now be pointing to deallocated memory
+* all of this is prevented by the borrowing rules
+
+For more details of the `Vec<T>` type, look into the "dark side" of Rust: [The Rustonomicon](https://doc.rust-lang.org/book/ch08-01-vectors.html).
+#### Iterating Over the Values in a Vector
+Using a `for` loop to get immutable references to each element
+```
+let v = vec![100, 32, 57];
+for i in &v {
+    println!("{i}");
+}
+```
+Using a `for` loop to get mutable references to each element
+```
+let mut v = vec![100, 32, 57];
+for i in &mut v {
+    *i += 50;
+}
+```
+**Note:** the use of the `*` dereference operator to get to the value in `i` before using the `+=` operator. This is covered more in chapter 15.  
+
+Iterating over a vector, whether mutably or immutably, is safe because of the borrow checker's rules. A compile error **will** result if we attempt to insert or remove items in the `for` loop bodies. The reference to the vector that the `for` loop holds prevents simultaneous modification of the whole vector.
+#### Using an Enum to Store Multiple Types
+Vectors can only store values of the same value type. Enums, with their variants, are not limited in this manner. All the variants in an enum are defined under the same enum type. So, create a vector that holds that enum, and you have carefully sidestepped any compile errors.
+```
+enum SpreadsheetCell {
+    Int(i32),
+    Float(f64),
+    Text(String),
+}
+
+let row = vec![
+    SpreadsheetCell::Int(3),
+    SpreadsheetCell::Text(String::from("blue")),
+    SpreadsheetCell::Float(10.12),
+];
+```
+Rust needs to know what types will be in the vector at compile time so it knows exactly how much memory on the heap will be needed to store each element. It is necessary to be explicit about what types are allowed in the vector. Using an enum along with a `match` expression ensures that every possible case is handled at compile time.
+#### Dropping a Vector Drops its Elements
+Like any other `struct`, a vector is freed when it goes out of scope.  
+When the vector gets dropped:
+* all of its contents are also dropped
+* the integers it holds will be cleaned up
+* the borrow checker ensures that any references to contents of the vector are only used while the vector is valid
+### 8.2 Storing UTF-8 Encoded Text with Strings
+New Rust users run into a combination of three common difficulties with strings:
+1. Rust is designed to expose errors
+2. strings are more complicated as a data structure type than they appear
+3. UTF-8
+#### What is a String?
+* In the core language, Rust has only one string type: *string slice* `str` and the borrowed form `&str`.
+* String literals are string slices stored in the program's binary.
+* The `String` type provided by the `std` library is a growable, mutable, owned, UTF-8 encoded string type.
+* Both types are UTF-8 encoded.
+#### Creating a New String
+Many of the same operations available with `Vec<T>` are available to `String` because `String` is actually implemented as a wrapper around a vector of bytes with some extra guarantees, restrictions, and capabilities.
+```{rust}
+// create a new instance
+let mut s = String::new();
+
+// convert some initial data
+let data = "initial contents";
+let s = data.to_string();
+
+// the method also works on a literal directly:
+let s = "initial contents".to_string();
+// another way:
+let s = String::from("initial contents");
+```
+Because strings are used for so many things, we can use many different generic APIs. Strings are UTF-8 encoded; they may include any properly encoded data in them.
+```{rust}
+// Storing greetings in different languages in strings:
+let hello = String::from("السلام عليكم");  // Arabic (hello)
+let hello = String::from("Dobrý den"); // Czech (good morning)
+let hello = String::from("Hello"); // English
+let hello = String::from("שלום"); // Hebrew (peace)
+let hello = String::from("नमस्ते"); // Hindi (hello)
+let hello = String::from("こんにちは"); // Japanese (hello)
+let hello = String::from("안녕하세요"); // Korean (hello)
+let hello = String::from("你好"); // Chinese simplified (are you ok)
+let hello = String::from("Olá"); // Portugese (hello)
+let hello = String::from("Здравствуйте"); // Russian (hello)
+let hello = String::from("Hola"); // Spanish (hello)
+```
+#### Updating a String
+Like a vector type, the String type can grow in size and its contents change if you push more data into it. In addition, the `+` operator and the `format!` macro can be used to concatenate `String` values.  
+
+**Appending** to a String with `push_str`
+```{rust}
+// append a string slice
+let mut s = String::from("foo");
+s.push_str("bar");
+```
+After these two lines, `s` will contain 'foobar'. The `push_str` method takes a string slice because we don't necessarily want to transfer ownership of the parameter.
+```{rust}
+let mut s1 = String::from("foo");
+let s2 = "bar";
+s1.push_str(s2);
+println!(s2 is {s2}");
+```
+Because ownership is not transferred, `s2` is still available in that last line.  
+
+**Appending** to a String with `push`  
+The `push` method acts on a single character as a parameter and adds it to the `String`.
+#### Concatenation with the `+` operator
+Another effective method is the `+` operator, which acts as the `add` method does.  
+Signature of the `add` method:
+```{rust}
+fn add(self, s: &str) -> String {}
+```
+The `std` library uses the `add` method defined using generics and associated types. The above code has substituted in the concrete type, which occurs when we call this method with `String` values.  
+The example provided by the (incomplete) signature along with the next example demonstrate clues to understanding the tricky behavior we encounter with the `+` operator.
+```{rust}
+let s1 = String::from("Hello, ");
+let s2 = String::from("world!");
+let s3 = s1 + &s2; // note s1 has been moved here and can no longer be used
+```
+Use the reference `&s2` in the call to `add` so that the compiler can *coerce* the `&String` argument into a `&str`. **Deref coercion** turns `&s2` into `&s2[..]`, a concept discussed in more detail in chapter 15.
+
+The important points to pay attention to here are:
+* we can't `add` to `String` values together
+* we can add one `String` to a `&String` or `&str`
+* `add` does not take ownership of the `s` parameter
+* `add` takes ownership of `self`
+* the note regarding the overall complexity of the `String` type was an understatement.
+
+
+
+### 8.3 Storing Keys with Associated Values in Hash Maps
+
+
+---
+## Chapter 9: Error Handling
+
+### 9.1 Unrecoverable Errors with panic!
+
+### 9.2 Recoverable Errors with Result
+
+### 9.3 To panic! or Not to panic!
+
+
+---
+## Chapter 10: Generic Types, Traits, and Lifetimes
+
+### 10.1 Generic Data Types
+
+### 10.2 Traits: Defining Shared Behaviors
+
+### 10.3 Validating References with Lifetimes
+
+
+---
+## Chapter 11: Writing Automated Tests
+
+### 11.1 How to Write Tests
+
+### 11.2 Controlling How Tests Are Run
+
+### 11.3 Test Organization
